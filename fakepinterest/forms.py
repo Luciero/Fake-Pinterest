@@ -23,6 +23,6 @@ class FormCriarConta(FlaskForm):
         if usuario:
             return ValidationError("E-mail ja cadastrado, cadastre-se novamente!")
 
-class FormPostar(FlaskForm):
+class FormFoto(FlaskForm):
     imagem = FileField("Foto", validators=[DataRequired()])
     botao_confirmacao = SubmitField("Enviar")

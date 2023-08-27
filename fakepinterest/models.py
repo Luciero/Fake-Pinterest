@@ -1,4 +1,4 @@
-#Criar as estruturas do banco de dados
+# Criar as estruturas do banco de dados
 from fakepinterest import database, login_manager
 from datetime import datetime
 from flask_login import UserMixin

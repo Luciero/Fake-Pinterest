@@ -3,9 +3,10 @@ from flask import render_template, url_for, redirect
 from flask_login import login_required, login_user, logout_user, current_user
 from fakepinterest import app, database, bcrypt
 from fakepinterest.models import Usuario, Posts
-from fakepinterest.forms import FormLogin, FormCriarConta, FormPostar
+from fakepinterest.forms import FormLogin, FormCriarConta, FormFoto
 import os
 from werkzeug.utils import secure_filename
+from flask import request, jsonify
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -34,18 +35,19 @@ def criarconta():
     return render_template("criarconta.html", form=formcriarconta)
 
 
-@app.route("/perfil/<id_usuario>", methods=["GET","POST"])
+@app.route("/perfil/<id_usuario>", methods=["GET", "POST"])
 @login_required
 def perfil(id_usuario):
     if int(id_usuario) == int(current_user.id):
-        #Usuario vendo o perfil dele
-        form_foto = FormPostar()
+        # Usuario vendo o perfil dele
+        form_foto = FormFoto()
         if form_foto.validate_on_submit():
             arquivo = form_foto.imagem.data
             nome_seguro = secure_filename(arquivo.filename)
 
             # Salvar o arquivo na pasta fotos_posts
-            caminho = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config["UPLOAD_FOLDER"], nome_seguro)
+            caminho = os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                                   app.config["UPLOAD_FOLDER"], nome_seguro)
             arquivo.save(caminho)
 
             # Registrar-lo no banco de dados
@@ -57,7 +59,6 @@ def perfil(id_usuario):
     else:
         usuario = Usuario.query.get(int(id_usuario))    #Usuario vendo o perfil de outra pessoa
         return render_template("perfil.html", usuario=usuario, form=None)
-
 
 @app.route("/logout")
 @login_required
